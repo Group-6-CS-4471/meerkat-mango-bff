@@ -1,4 +1,4 @@
-package meerkat.mango.api.gateawy;
+package meerkat.mango.api.gateway.registry;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,16 +18,16 @@ import java.util.Map;
 
 @Service
 @Component
-public class MeerkatMangoGatewayService {
+public class ServiceRegistryService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MeerkatMangoGatewayService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceRegistryService.class);
     private static final String USER_AGENT = "meerkat-bff";
     private static final String SERVICE_PATH = "verify";
     private static final String SERVICE_QUERY = "service";
     private final RestTemplate restTemplate;
     private final Map<RegistryType, String> registryUrls;
 
-    public MeerkatMangoGatewayService() {
+    public ServiceRegistryService() {
         this.restTemplate = new RestTemplate();
         this.registryUrls = new HashMap<>();
     }

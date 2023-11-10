@@ -1,4 +1,4 @@
-package meerkat.mango.api.gateawy;
+package meerkat.mango.api.gateway.registry;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
