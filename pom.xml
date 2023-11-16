@@ -42,6 +42,13 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+
+			<!--		AWS -->
+			<dependency>
+				<groupId>com.amazonaws</groupId>
+				<artifactId>aws-java-sdk-sqs</artifactId>
+				<version>1.12.587</version>
+			</dependency>
 	</dependencies>
 
 	<build>

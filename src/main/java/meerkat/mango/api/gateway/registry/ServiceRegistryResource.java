@@ -1,6 +1,7 @@
 package meerkat.mango.api.gateway.registry;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,18 +18,18 @@ public class ServiceRegistryResource {
         this.serviceRegistryService = serviceRegistryService;
     }
 
-    @GetMapping("/")
+    @GetMapping("/health")
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok("Hello World");
     }
 
-    @PutMapping("/register-registry")
+    @PutMapping(value = "/register-registry", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> registerRegistry(@RequestBody RegistryConfigBean registryConfigBean) {
         serviceRegistryService.registerRegistry(registryConfigBean);
         return ResponseEntity.ok("registered");
     }
 
-    @GetMapping("/verify")
+    @GetMapping(value = "/verify", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> verifyService(@RequestParam("service") String service) {
         final var isAlive = serviceRegistryService.verifyService(service);
         return ResponseEntity.ok(isAlive);
