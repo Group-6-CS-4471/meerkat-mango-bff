@@ -21,7 +21,11 @@ import java.util.Map;
 public class ServiceRegistryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceRegistryService.class);
-    private static final String USER_AGENT = "meerkat-bff";
+    private static final String LOCAL_HOST = "localhost";
+    private static final Map<RegistryType, String> REGISTRY_PORTS = Map.of(
+            RegistryType.MAIN, "50000",
+            RegistryType.BACKUP, "50001"
+    );
     private static final String SERVICE_PATH = "verify";
     private static final String SERVICE_QUERY = "service";
     private final RestTemplate restTemplate;
@@ -42,20 +46,19 @@ public class ServiceRegistryService {
             return mainRegistryResponse.getBody().getResponseCode() == Response.Status.OK.getStatusCode();
         }
 
-        final var backupResponse = callServiceRegistry(service, RegistryType.MAIN);
+        final var backupResponse = callServiceRegistry(service, RegistryType.BACKUP);
         if (!backupResponse.getStatusCode().is2xxSuccessful()) {
             LOG.error("Service registries are unavailable. This isn't right.");
             return false;
         }
 
-        // backup is now the main:
-        registryUrls.put(RegistryType.MAIN, registryUrls.get(RegistryType.BACKUP));
         return backupResponse.getBody().getResponseCode() == Response.Status.OK.getStatusCode();
     }
 
     private ResponseEntity<VerifyServiceResponse> callServiceRegistry(final String service, final RegistryType type) {
         final var uri = UriComponentsBuilder.newInstance()
-                .host(registryUrls.get(type))
+                .host(LOCAL_HOST)
+                .port(REGISTRY_PORTS.get(type))
                 .path(SERVICE_PATH)
                 .queryParam(SERVICE_QUERY, service);
 
