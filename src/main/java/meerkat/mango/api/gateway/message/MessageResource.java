@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/message")
 public class MessageResource {
-
     private static final String NO_RESPONSE_ERROR = "No service could pick up the request, please try again.";
 
     private final FrontendRequestConsumer frontendRequestConsumer;
