@@ -1,16 +1,15 @@
 package meerkat.mango.api.gateway.message.orders;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@Getter
+
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
+@Setter
+@Getter
 public class OrderRequest {
 
-    @JsonProperty("message")
     private final String message;
 }
