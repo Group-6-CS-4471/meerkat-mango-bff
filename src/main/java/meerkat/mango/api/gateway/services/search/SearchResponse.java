@@ -18,6 +18,9 @@ public class SearchResponse {
     private final String productId;
 
     @JsonProperty
+    private final String name;
+
+    @JsonProperty
     private final String provider;
 
     @JsonProperty

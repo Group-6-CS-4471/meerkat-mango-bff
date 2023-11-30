@@ -33,6 +33,27 @@ public class SearchService {
         this.discovery = discovery;
     }
 
+    public GetItemResponse getItem(final String productId, final String provider) {
+        final var url = discovery.getService(ServiceType.SEARCH);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(SEARCH_PATH, productId, provider).build();
+        final var response = restTemplate.getForEntity(properUrl.toUri(), BearerProductResponse.class);
+
+        if (!response.hasBody() || !response.getStatusCode().is2xxSuccessful()) {
+            return null;
+        }
+        final var bearerResponse = response.getBody();
+        final var details = bearerResponse.getDetails();
+        return GetItemResponse.builder()
+                .productId(bearerResponse.getProductId())
+                .provider(bearerResponse.getProvider())
+                .name(details.getName())
+                .stock(details.getStock())
+                .retailPrice(details.getRetailPrice())
+                .discount(details.getDiscount())
+                .images(details.getImages())
+                .description(details.getDescription())
+                .build();
+    }
 
     public List<SearchResponse> search(final List<String> keywords) {
         final var url = discovery.getService(ServiceType.SEARCH);
@@ -51,6 +72,7 @@ public class SearchService {
                     .currentPrice(details.getRetailPrice() * (1 - details.getDiscount()))
                     .normalPrice(details.getRetailPrice())
                     .imageUrl(details.getImages().get(0))
+                    .name(details.getName())
                     .build();
         }).collect(Collectors.toList());
     }
@@ -62,6 +84,22 @@ public class SearchService {
 
         @JsonProperty
         private final List<Product> products;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    @NoArgsConstructor(force = true)
+    static class BearerProductResponse {
+
+        @JsonProperty
+        private final String productId;
+
+        @JsonProperty
+        private final String provider;
+
+        @JsonProperty
+        private final ProductDetails details;
+
     }
 
 }
