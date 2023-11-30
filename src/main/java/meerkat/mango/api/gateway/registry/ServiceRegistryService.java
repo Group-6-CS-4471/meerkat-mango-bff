@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,44 +30,35 @@ public class ServiceRegistryService {
 
     public ServiceRegistryService() {
         this.restTemplate = new RestTemplate();
-        this.registryUrls = new HashMap<>();
+        this.registryUrls = Map.of(RegistryType.MAIN, "localhost");
     }
 
     public void registerRegistry(RegistryConfigBean registryConfigBean) {
         registryUrls.put(registryConfigBean.getType(), registryConfigBean.getIp());
     }
 
-    public boolean verifyService(final String service) {
+    public VerifyServiceResponse verifyService(final String service) {
         final var mainRegistryResponse = callServiceRegistry(service, RegistryType.MAIN);
         if (mainRegistryResponse.getStatusCode().is2xxSuccessful()) {
-            return mainRegistryResponse.getBody().getResponseCode() == Response.Status.OK.getStatusCode();
+            return mainRegistryResponse.getBody();
         }
 
-        final var backupResponse = callServiceRegistry(service, RegistryType.MAIN);
+        final var backupResponse = callServiceRegistry(service, RegistryType.BACKUP);
         if (!backupResponse.getStatusCode().is2xxSuccessful()) {
             LOG.error("Service registries are unavailable. This isn't right.");
-            return false;
+            return null;
         }
 
-        // backup is now the main:
-        registryUrls.put(RegistryType.MAIN, registryUrls.get(RegistryType.BACKUP));
-        return backupResponse.getBody().getResponseCode() == Response.Status.OK.getStatusCode();
+        return backupResponse.getBody();
     }
 
     private ResponseEntity<VerifyServiceResponse> callServiceRegistry(final String service, final RegistryType type) {
         final var uri = UriComponentsBuilder.newInstance()
                 .host(registryUrls.get(type))
+                .port("50000")
                 .path(SERVICE_PATH)
                 .queryParam(SERVICE_QUERY, service);
 
-        return restTemplate.getForEntity(uri.toUriString(), VerifyServiceResponse.class);
-    }
-
-    @Getter
-    @Setter
-    @RequiredArgsConstructor
-    @NoArgsConstructor(force = true)
-    static class VerifyServiceResponse {
-        private final int responseCode;
+        return restTemplate.getForEntity("http:" + uri.toUriString(), VerifyServiceResponse.class);
     }
 }

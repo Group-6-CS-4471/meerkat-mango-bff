@@ -1,16 +1,19 @@
-package meerkat.mango.api.gateway.message.orders;
+package meerkat.mango.api.gateway.registry;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+import java.util.Map;
 
 @Getter
+@Setter
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
-public class OrderRequest {
+public class VerifyServiceResponse {
 
-    @JsonProperty("message")
-    private final String message;
+    @JsonProperty
+    private final Map<String, ServiceUrl> serviceProviders;
 }
