@@ -1,5 +1,9 @@
 package meerkat.mango.api.gateway.services.search;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import meerkat.mango.api.gateway.services.Discovery;
 import meerkat.mango.api.gateway.services.ServiceType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SearchService {
@@ -29,15 +34,34 @@ public class SearchService {
     }
 
 
-    public SearchResponse search(final List<String> keywords) {
+    public List<SearchResponse> search(final List<String> keywords) {
         final var url = discovery.getService(ServiceType.SEARCH);
         final var properUrl = UriComponentsBuilder.fromHttpUrl(url).path(SEARCH_PATH).queryParam("keyword", keywords).build();
-        final var response = restTemplate.getForEntity(properUrl.toUri(), SearchResponse.class);
+        final var response = restTemplate.getForEntity(properUrl.toUri(), BearerSearchResponse.class);
 
-        if (response.hasBody() && response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
+        if (!response.hasBody() || !response.getStatusCode().is2xxSuccessful()) {
+            return null;
         }
-        return null;
+        final var bearerBody = response.getBody();
+        return bearerBody.products.stream().map(p -> {
+            final var details = p.getDetails();
+            return SearchResponse.builder()
+                    .productId(p.getProductId())
+                    .provider(p.getProvider())
+                    .currentPrice(details.getRetailPrice() * (1 - details.getDiscount()))
+                    .normalPrice(details.getRetailPrice())
+                    .imageUrl(details.getImages().get(0))
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    @NoArgsConstructor(force = true)
+    static class BearerSearchResponse {
+
+        @JsonProperty
+        private final List<Product> products;
     }
 
 }

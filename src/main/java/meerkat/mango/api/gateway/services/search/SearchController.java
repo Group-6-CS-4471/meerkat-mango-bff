@@ -2,10 +2,10 @@ package meerkat.mango.api.gateway.services.search;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class SearchController {
     }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody SearchResponse getProducts(@RequestParam("keyword") final List<String> keyword) {
-        return searchService.search(keyword);
+    public ResponseEntity<List<SearchResponse>> getProducts(@RequestParam("keyword") final List<String> keyword) {
+        return ResponseEntity.ok().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).body(searchService.search(keyword));
     }
 }
