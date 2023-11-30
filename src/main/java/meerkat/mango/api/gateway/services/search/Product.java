@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor(force = true)
 public class Product {
 
-    @JsonProperty("product_uuid")
+    @JsonProperty
     private final String productId;
 
     @JsonProperty

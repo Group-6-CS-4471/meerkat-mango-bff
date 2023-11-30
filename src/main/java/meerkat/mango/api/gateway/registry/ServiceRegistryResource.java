@@ -28,14 +28,6 @@ public class ServiceRegistryResource {
         return ResponseEntity.ok("Hello World");
     }
 
-    @PutMapping(value = "/register-registry", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> registerRegistry(@RequestBody RegistryConfigBean registryConfigBean) {
-        serviceRegistryService.registerRegistry(registryConfigBean);
-        return ResponseEntity.ok()
-                .header(CORS_HEADER_NAME, CORS_HEADER_VALUE)
-                .body("registered");
-    }
-
     @GetMapping(value = "/verify", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VerifyServiceResponse> verifyService(@RequestParam("service") String service) {
         final var services = serviceRegistryService.verifyService(service);
