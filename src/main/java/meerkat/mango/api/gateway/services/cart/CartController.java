@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/cart")
 public class CartController {
 
+    private static final String CORS_HEADER_NAME = "Access-Control-Allow-Origin";
+    private static final String CORS_HEADER_VALUE = "*";
     private final CartService cartService;
 
     @Autowired
@@ -27,14 +29,14 @@ public class CartController {
     }
 
     @GetMapping(value = "/{cartId}/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Cart getCartForUser(@PathVariable("cartId") final String cartId,
+    public ResponseEntity<Cart> getCartForUser(@PathVariable("cartId") final String cartId,
                                              @PathVariable("userId") final String userId) {
-        return cartService.getCart(cartId, userId);
+        return ResponseEntity.ok().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).body(cartService.getCart(cartId, userId));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Cart addItemToCart(@RequestBody final Cart cart) {
-        return cartService.addItemsToCart(cart);
+    public ResponseEntity<Cart> addItemToCart(@RequestBody final Cart cart) {
+        return ResponseEntity.ok().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).body(cartService.addItemsToCart(cart));
     }
 
     @DeleteMapping(value = "/{cartId}/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,7 +44,7 @@ public class CartController {
                                                    @PathVariable("userId") final String userId,
                                                    @RequestBody final CartProduct cartProduct) {
         cartService.deleteItemInCart(cartId, userId, cartProduct);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).build();
     }
 
     @PutMapping(value = "/{cartId}/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,6 +52,6 @@ public class CartController {
                                                  @PathVariable("userId") final String userId,
                                                  @RequestBody final CartProduct cartProduct) {
         cartService.modifyItemInCart(cartId, userId, cartProduct);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).build();
     }
 }
