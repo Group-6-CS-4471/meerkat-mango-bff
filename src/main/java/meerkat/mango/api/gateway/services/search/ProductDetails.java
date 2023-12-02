@@ -18,7 +18,7 @@ public class ProductDetails {
     @JsonProperty
     private final int stock;
 
-    @JsonProperty
+    @JsonProperty("retail_price")
     private final double retailPrice;
 
     @JsonProperty
