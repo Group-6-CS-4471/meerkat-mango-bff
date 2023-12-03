@@ -134,12 +134,13 @@ curl --location 'http://localhost:50003/cart/534928f2-50e3-4c4d-bddc-206ffa654ff
 ### Example Response
 ```json
 {
- "productId": "534928f2-50e3-4c4d-bddc-206ffa654ffd",
+  "productId": "154968876a45c0e99d35b5d57290d0b3",
   "provider": "Amazon",
-  "reviews": {
-    "John Smith": "This is great",
-    "Alice Bob": "This is meh", 
-    "Bob Alice": "This is terrible"
-  }
+  "reviews": [
+    {
+      "name": "John Smith",
+      "review": "This is pretty good!"
+    }
+  ]
 }
 ```

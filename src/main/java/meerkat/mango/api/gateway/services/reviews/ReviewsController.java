@@ -25,7 +25,7 @@ public class ReviewsController {
     }
 
     @GetMapping(value = "/{productId}/{provider}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductReview> getProductReview(@PathVariable("productId") final String productId,
+    public ResponseEntity<ReviewResponse> getProductReview(@PathVariable("productId") final String productId,
                                                           @PathVariable("provider") final String provider) {
         final var review = reviewsService.getReviews(productId, provider);
         if (review == null) {

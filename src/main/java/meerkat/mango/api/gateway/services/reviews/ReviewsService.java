@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewsService {
@@ -29,7 +30,7 @@ public class ReviewsService {
                 .build();
     }
 
-    public ProductReview getReviews(final String productId, final String provider) {
+    public ReviewResponse getReviews(final String productId, final String provider) {
         final var url = discovery.getService(ServiceType.REVIEWS);
         if (url == null) {
             return null;
@@ -40,7 +41,11 @@ public class ReviewsService {
         if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody()) {
             return null;
         }
-
-        return response.getBody();
+        final var responseReview = response.getBody();
+        return new ReviewResponse(
+                responseReview.getProductId(),
+                responseReview.getProvider(),
+                responseReview.getReviews().entrySet().stream().map(entry -> new ReviewResponse.Review(entry.getKey(), entry.getValue())).collect(Collectors.toList())
+        );
     }
 }
