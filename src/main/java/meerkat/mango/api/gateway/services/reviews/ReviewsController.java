@@ -14,9 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/reviews")
 public class ReviewsController {
 
-    private static final String CORS_HEADER_NAME = "Access-Control-Allow-Origin";
-    private static final String CORS_HEADER_VALUE = "*";
-
     private final ReviewsService reviewsService;
 
     @Autowired
@@ -29,8 +26,8 @@ public class ReviewsController {
                                                           @PathVariable("provider") final String provider) {
         final var review = reviewsService.getReviews(productId, provider);
         if (review == null) {
-            return ResponseEntity.badRequest().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).build();
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).body(review);
+        return ResponseEntity.ok(review);
     }
 }

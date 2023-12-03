@@ -15,9 +15,7 @@ import java.util.List;
 @RequestMapping("/search")
 public class SearchController {
 
-    private static final String CORS_HEADER_NAME = "Access-Control-Allow-Origin";
-    private static final String CORS_HEADER_VALUE = "*";
-    private static final ResponseEntity.BodyBuilder OK_RESPONSE = ResponseEntity.ok().header(CORS_HEADER_NAME, CORS_HEADER_VALUE);
+    private static final ResponseEntity.BodyBuilder OK_RESPONSE = ResponseEntity.ok();
     private final SearchService searchService;
 
     @Autowired

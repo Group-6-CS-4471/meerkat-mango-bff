@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ServiceRegistryResource {
 
-    private static final String CORS_HEADER_NAME = "Access-Control-Allow-Origin";
-    private static final String CORS_HEADER_VALUE = "*";
-
     private final ServiceRegistryService serviceRegistryService;
 
     @Autowired
@@ -32,10 +29,8 @@ public class ServiceRegistryResource {
     public ResponseEntity<VerifyServiceResponse> verifyService(@RequestParam("service") String service) {
         final var services = serviceRegistryService.verifyService(service);
         if (services == null) {
-            ResponseEntity.notFound().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).build();
+            ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok()
-                .header(CORS_HEADER_NAME, CORS_HEADER_VALUE)
-                .body(services);
+        return ResponseEntity.ok(services);
     }
 }
