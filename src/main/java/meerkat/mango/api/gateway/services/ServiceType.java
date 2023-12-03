@@ -5,7 +5,8 @@ public enum ServiceType {
     CHECKOUT("checkout"),
     STOCK_NOTIFIER("stockNotifier"),
     PRICE_NOTIFIER("priceChangeNotifier"),
-    CART("cart");
+    CART("cart"),
+    REVIEWS("reviews");
 
     private final String serviceName;
 
