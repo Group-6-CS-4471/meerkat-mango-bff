@@ -31,7 +31,7 @@ public class Discovery {
     public String getService(final ServiceType type) {
         final var services = serviceRegistryService.verifyService(type.getServiceName());
 
-        if (services == null) {
+        if (services == null || services.getServiceProviders().isEmpty()) {
             LOG.error("No service providers for {} are available.", type.getServiceName());
             return null;
         }
