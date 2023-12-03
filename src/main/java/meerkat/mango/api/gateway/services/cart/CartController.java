@@ -29,7 +29,7 @@ public class CartController {
     }
 
     @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getCartByUserId(@PathVariable("userId") final String userId) {
+    public ResponseEntity<CartByUserIdResponse> getCartByUserId(@PathVariable("userId") final String userId) {
         return ResponseEntity.ok().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).body(cartService.getCartByUserId(userId));
     }
 
