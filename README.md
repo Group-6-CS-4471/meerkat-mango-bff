@@ -128,7 +128,7 @@ curl --location 'http://localhost:50003/search?keyword=keyword'
 ## Reviews
 
 ```shell
-curl --location 'http://localhost:50003/cart/534928f2-50e3-4c4d-bddc-206ffa654ffd/Amazon'
+curl --location 'http://localhost:50003/reviews/534928f2-50e3-4c4d-bddc-206ffa654ffd/Amazon'
 ```
 
 ### Example Response
