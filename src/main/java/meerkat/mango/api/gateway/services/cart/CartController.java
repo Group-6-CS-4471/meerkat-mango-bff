@@ -28,9 +28,14 @@ public class CartController {
         this.cartService = cartService;
     }
 
+    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getCartByUserId(@PathVariable("userId") final String userId) {
+        return ResponseEntity.ok().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).body(cartService.getCartByUserId(userId));
+    }
+
     @GetMapping(value = "/{cartId}/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cart> getCartForUser(@PathVariable("cartId") final String cartId,
-                                             @PathVariable("userId") final String userId) {
+                                               @PathVariable("userId") final String userId) {
         return ResponseEntity.ok().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).body(cartService.getCart(cartId, userId));
     }
 

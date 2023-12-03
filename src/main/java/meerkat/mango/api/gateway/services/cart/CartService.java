@@ -31,6 +31,16 @@ public class CartService {
         this.discovery = discovery;
     }
 
+    public String getCartByUserId(final String userId) {
+        final var url = discovery.getService(ServiceType.CART);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CART_PATH, userId).build();
+        final var response = restTemplate.getForEntity(properUrl.toUri(), String.class);
+        if (!response.hasBody() || !response.getStatusCode().is2xxSuccessful()) {
+            return null;
+        }
+        return response.getBody();
+    }
+
     public Cart getCart(final String cartId, final String userId) {
         final var url = discovery.getService(ServiceType.CART);
         final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CART_PATH, cartId, userId).build();

@@ -32,7 +32,7 @@ public class ServiceRegistryResource {
     public ResponseEntity<VerifyServiceResponse> verifyService(@RequestParam("service") String service) {
         final var services = serviceRegistryService.verifyService(service);
         if (services == null) {
-            ResponseEntity.notFound();
+            ResponseEntity.notFound().header(CORS_HEADER_NAME, CORS_HEADER_VALUE).build();
         }
         return ResponseEntity.ok()
                 .header(CORS_HEADER_NAME, CORS_HEADER_VALUE)
