@@ -1,5 +1,6 @@
 package meerkat.mango.api.gateway.services.cart;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Cart {
 
     @JsonProperty
@@ -25,6 +27,10 @@ public class Cart {
     @JsonProperty
     @Setter
     private List<ProductDbo> products;
+
+    @JsonProperty
+    @Setter
+    private Double total;
 
     @Getter
     @RequiredArgsConstructor

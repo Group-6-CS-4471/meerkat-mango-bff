@@ -49,13 +49,25 @@ public class CartService {
         if (!response.hasBody() || !response.getStatusCode().is2xxSuccessful()) {
             return null;
         }
-        return response.getBody();
+
+        final var cart = response.getBody();
+
+        cart.setTotal(cart.getProducts().stream().map(p -> p.getCartProduct().getPrice() * p.getCartProduct().getAmount()).reduce(Double::sum).get());
+
+        return cart;
     }
 
-    public Cart addItemsToCart(final AddToCartRequest cart) {
+    public Cart addItemsToCart(final AddToCartRequest addToCartRequest) {
         final var url = discovery.getService(ServiceType.CART);
         final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CART_PATH).build();
-        return restTemplate.postForObject(properUrl.toUri(), cart, Cart.class);
+        final var response = restTemplate.postForObject(properUrl.toUri(), addToCartRequest, Cart.class);
+        if (response == null) {
+            return response;
+        }
+
+        response.setTotal(response.getProducts().stream().map(p -> p.getCartProduct().getPrice() * p.getCartProduct().getAmount()).reduce(Double::sum).get());
+
+        return response;
     }
 
     public void deleteItemInCart(final String cartId, final String userId, final CartProduct cartProduct) {
