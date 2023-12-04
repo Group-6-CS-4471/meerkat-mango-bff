@@ -37,7 +37,7 @@ public class CartController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Cart> addItemToCart(@RequestBody final Cart cart) {
+    public ResponseEntity<Cart> addItemToCart(@RequestBody final AddToCartRequest cart) {
         return ResponseEntity.ok().body(cartService.addItemsToCart(cart));
     }
 
