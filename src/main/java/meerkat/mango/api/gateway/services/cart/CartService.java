@@ -52,7 +52,7 @@ public class CartService {
         return response.getBody();
     }
 
-    public Cart addItemsToCart(final Cart cart) {
+    public Cart addItemsToCart(final AddToCartRequest cart) {
         final var url = discovery.getService(ServiceType.CART);
         final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CART_PATH).build();
         return restTemplate.postForObject(properUrl.toUri(), cart, Cart.class);
@@ -60,13 +60,18 @@ public class CartService {
 
     public void deleteItemInCart(final String cartId, final String userId, final CartProduct cartProduct) {
         final var url = discovery.getService(ServiceType.CART);
-        final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CART_PATH, cartId, userId).build();
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(CART_PATH, cartId, userId)
+                .queryParam("productId", cartProduct.getProductId())
+                .queryParam("provider", cartProduct.getProvider())
+                .build();
         restTemplate.exchange(properUrl.toUri(), HttpMethod.DELETE, new HttpEntity<>(cartProduct), Void.class);
     }
 
     public void modifyItemInCart(final String cartId, final String userId, final CartProduct cartProduct) {
         final var url = discovery.getService(ServiceType.CART);
-        final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CART_PATH, cartId, userId).build();
-        restTemplate.put(properUrl.toUri(), new HttpEntity<>(cartProduct));
+        final var modifyCartRequest = new ModifyCartBearerRequest(cartId, userId, new Cart.ProductIdentifier(cartProduct.getProductId(), cartProduct.getProvider()), cartProduct.getAmount());
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CART_PATH).build();
+        restTemplate.put(properUrl.toUri(), new HttpEntity<>(modifyCartRequest));
     }
 }

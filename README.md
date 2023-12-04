@@ -6,44 +6,98 @@ Meerkat Mango's BFF (Backend for front end)
 ./mvnw spring-boot:run  -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=6060"
 ```
 
-## API Docs
+# API Docs
 
-### Cart
+## Cart
 
+Get a user's cart
 ```shell
-curl --location 'http://localhost:50003/cart/534928f2-50e3-4c4d-bddc-206ffa654ffd/tes-user-1'
+curl --location 'http://localhost:50003/cart/e41182e7-512d-4d12-9509-756a77d44635/f5e05b3f-e6ee-4777-9a3c-ac63a099a093'
 ```
-^ get a user's cart
-- general format: http://localhost:50003/cart/{cartId}/{userId}
+- general format: http://localhost:50003/cart/{cartId}/{userId} 
+
+Example Response 
+```json
+{
+    "cartId": "e41182e7-512d-4d12-9509-756a77d44635",
+    "userId": "f5e05b3f-e6ee-4777-9a3c-ac63a099a093",
+    "products": [
+        {
+            "productIdentifier": {
+                "provider": "eBay",
+                "productId": "154968876a45c0e99d35b5d57290d0b3"
+            },
+            "cartProduct": {
+                "provider": null,
+                "amount": 1,
+                "image": "http://img5a.flixcart.com/image/kurta/j/t/d/m002pcotpinrain-masara-l-original-imaeheqbxzdbygke.jpeg",
+                "name": "Kurta by Stanford scientists",
+                "price": 13.99,
+                "productId": null
+            }
+        }
+    ]
+}
+```
+
+Delete item from Cart
 ```shell
-curl --location --request DELETE 'http://localhost:50003/cart/534928f2-50e3-4c4d-bddc-206ffa654ffd/tes-user-1' \
+curl --location --request DELETE 'http://localhost:50003/cart/e41182e7-512d-4d12-9509-756a77d44635/f5e05b3f-e6ee-4777-9a3c-ac63a099a093' \
 --header 'Content-Type: application/json' \
 --data '{
-    "productId": "154968876a45c0e99d35b5d57290d0b3",
-    "provider": "Walmart",
-    "amount": 3
+            "provider": "eBay",
+            "productId": "154968876a45c0e99d35b5d57290d0b3"
 }'
 ``` 
-^ delete item from cart; general format http://localhost:50003/cart/{cartId}/{userId}
+- general format http://localhost:50003/cart/{cartId}/{userId}
+
+Add item to user's cart
 ```shell
 curl --location 'http://localhost:50003/cart' \
 --header 'Content-Type: application/json' \
 --data '{
-"cartId": "534928f2-50e3-4c4d-bddc-206ffa654ffd",
-"userId": "tes-user-1",
-"products": [
-{
-"productId": "154968876a45c0e99d35b5d57290d0b3",
-"provider": "Walmart",
-"amount": 2
-}
-]
+    "cartId": "e41182e7-512d-4d12-9509-756a77d44635",
+    "userId": "f5e05b3f-e6ee-4777-9a3c-ac63a099a093",
+    "products": [
+        {
+            "productId": "154968876a45c0e99d35b5d57290d0b3", 
+            "provider": "eBay", 
+            "image": "http://img5a.flixcart.com/image/kurta/j/t/d/m002pcotpinrain-masara-l-original-imaeheqbxzdbygke.jpeg", 
+            "name": "Kurta by Stanford scientists", 
+            "price": 13.99
+        }
+    ]
 }'
 ```
-^ add item to cart; general format: http://localhost:50003/cart 
+- general format: http://localhost:50003/cart 
 
 **NOTE** To add to / create a new cart, provide at least a `userId` and at least an empty list of `products`
 
+Example Response
+```json
+{
+  "cartId": "e41182e7-512d-4d12-9509-756a77d44635",
+  "userId": "f5e05b3f-e6ee-4777-9a3c-ac63a099a093",
+  "products": [
+    {
+      "productIdentifier": {
+        "provider": "eBay",
+        "productId": "154968876a45c0e99d35b5d57290d0b3"
+      },
+      "cartProduct": {
+        "provider": null,
+        "amount": 1,
+        "image": "http://img5a.flixcart.com/image/kurta/j/t/d/m002pcotpinrain-masara-l-original-imaeheqbxzdbygke.jpeg",
+        "name": "Kurta by Stanford scientists",
+        "price": 13.99,
+        "productId": null
+      }
+    }
+  ]
+}
+```
+
+Modify Item in Cart (Changing amount)
 ```shell
 curl --location --request PUT 'http://localhost:50003/cart/534928f2-50e3-4c4d-bddc-206ffa654ffd/tes-user-1' \
 --header 'Content-Type: application/json' \
@@ -53,26 +107,9 @@ curl --location --request PUT 'http://localhost:50003/cart/534928f2-50e3-4c4d-bd
 "amount": 3
 }'
 ```
-^ modify item in cart (i.e. change the amount); general format http://localhost:50003/cart/{cartId}/{userId}
+- general format http://localhost:50003/cart/{cartId}/{userId}
 
 **NOTE** with delete and modification, there is no response, since just static changes on the FE should be needed
-
-### Example Response
-
-Add to and get Cart:
-```json
-{
-    "cartId": "534928f2-50e3-4c4d-bddc-206ffa654ffd",
-    "userId": "tes-user-1",
-    "products": [
-        {
-            "provider": "Amazon",
-            "amount": 2,
-            "productId": null
-        }
-    ]
-}
-```
 
 ## Search
 ```shell
