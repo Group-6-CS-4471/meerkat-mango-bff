@@ -54,7 +54,7 @@ public class Discovery {
         }).findAny().get();
     }
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(initialDelay = 10000, fixedDelay = 30000)
     private void loadCache() {
         LOG.debug("reloading cache");
         for (final var type : ServiceType.values()) {

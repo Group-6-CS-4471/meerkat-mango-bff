@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Shopping Cart")
@@ -54,6 +55,18 @@ public class CartController {
                                                  @PathVariable("userId") final String userId,
                                                  @RequestBody final CartProduct cartProduct) {
         cartService.modifyItemInCart(cartId, userId, cartProduct);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/health/kill", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> killProvider(@RequestParam(value = "provider") final String provider) {
+        cartService.kill(provider);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/health/register", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> registerServiceProvider(@RequestParam(value = "provider") final String provider) {
+        cartService.register(provider);
         return ResponseEntity.noContent().build();
     }
 }

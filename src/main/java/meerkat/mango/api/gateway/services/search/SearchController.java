@@ -33,4 +33,16 @@ public class SearchController {
                                                    @PathVariable("provider") final String provider) {
         return OK_RESPONSE.body(searchService.getItem(productId, provider));
     }
+
+    @GetMapping(value = "/health/kill", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> killProvider(@RequestParam(value = "provider") final String provider) {
+        searchService.kill(provider);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/health/register", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> registerServiceProvider(@RequestParam(value = "provider") final String provider) {
+        searchService.register(provider);
+        return ResponseEntity.noContent().build();
+    }
 }
