@@ -86,4 +86,24 @@ public class CartService {
         final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CART_PATH).build();
         restTemplate.put(properUrl.toUri(), new HttpEntity<>(modifyCartRequest));
     }
+
+    public void kill(final String serviceProvider) {
+        final var url = discovery.getService(ServiceType.CART);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(CART_PATH, "health", "kill")
+                .queryParam("provider", serviceProvider)
+                .build();
+
+        restTemplate.getForEntity(properUrl.toUri(), String.class);
+    }
+
+    public void register(final String serviceProvider) {
+        final var url = discovery.getService(ServiceType.SEARCH);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(CART_PATH, "health", "register")
+                .queryParam("provider", serviceProvider)
+                .build();
+
+        restTemplate.getForEntity(properUrl.toUri(), String.class);
+    }
 }

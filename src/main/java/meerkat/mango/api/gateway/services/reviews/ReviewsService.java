@@ -48,4 +48,24 @@ public class ReviewsService {
                 responseReview.getReviews().entrySet().stream().map(entry -> new ReviewResponse.Review(entry.getKey(), entry.getValue())).collect(Collectors.toList())
         );
     }
+
+    public void kill(final String serviceProvider) {
+        final var url = discovery.getService(ServiceType.REVIEWS);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(REVIEWS_PATH, "health", "kill")
+                .queryParam("provider", serviceProvider)
+                .build();
+
+        restTemplate.getForEntity(properUrl.toUri(), String.class);
+    }
+
+    public void register(final String serviceProvider) {
+        final var url = discovery.getService(ServiceType.SEARCH);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(REVIEWS_PATH, "health", "register")
+                .queryParam("provider", serviceProvider)
+                .build();
+
+        restTemplate.getForEntity(properUrl.toUri(), String.class);
+    }
 }

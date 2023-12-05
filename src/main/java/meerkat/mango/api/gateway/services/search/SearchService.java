@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class SearchService {
 
-    private static final String SEARCH_PATH = "/search";
+    private static final String SEARCH_PATH = "search";
     private final RestTemplate restTemplate;
     private final Discovery discovery;
 
@@ -75,6 +75,26 @@ public class SearchService {
                     .name(details.getName())
                     .build();
         }).collect(Collectors.toList());
+    }
+
+    public void kill(final String serviceProvider) {
+        final var url = discovery.getService(ServiceType.SEARCH);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(SEARCH_PATH, "health", "kill")
+                .queryParam("provider", serviceProvider)
+                .build();
+
+        restTemplate.getForEntity(properUrl.toUri(), String.class);
+    }
+
+    public void register(final String serviceProvider) {
+        final var url = discovery.getService(ServiceType.SEARCH);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(SEARCH_PATH, "health", "register")
+                .queryParam("provider", serviceProvider)
+                .build();
+
+        restTemplate.getForEntity(properUrl.toUri(), String.class);
     }
 
     @Getter

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,5 +30,17 @@ public class ReviewsController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(review);
+    }
+
+    @GetMapping(value = "/health/kill", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> killProvider(@RequestParam(value = "provider") final String provider) {
+        reviewsService.kill(provider);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/health/register", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> registerServiceProvider(@RequestParam(value = "provider") final String provider) {
+        reviewsService.register(provider);
+        return ResponseEntity.noContent().build();
     }
 }
