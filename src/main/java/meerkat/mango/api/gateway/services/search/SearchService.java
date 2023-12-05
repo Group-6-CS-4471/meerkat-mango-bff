@@ -1,6 +1,7 @@
 package meerkat.mango.api.gateway.services.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,7 @@ public class SearchService {
                 .build();
     }
 
+    @CircuitBreaker(name = "search")
     public List<SearchResponse> search(final List<String> keywords) {
         final var url = discovery.getService(ServiceType.SEARCH);
         final var properUrl = UriComponentsBuilder.fromHttpUrl(url).path(SEARCH_PATH).queryParam("keyword", keywords).build();
