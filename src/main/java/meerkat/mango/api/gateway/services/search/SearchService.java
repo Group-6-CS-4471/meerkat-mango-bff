@@ -1,6 +1,7 @@
 package meerkat.mango.api.gateway.services.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,10 +10,13 @@ import meerkat.mango.api.gateway.services.Discovery;
 import meerkat.mango.api.gateway.services.ServiceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.ws.rs.ServiceUnavailableException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -23,15 +27,18 @@ public class SearchService {
 
     private static final String SEARCH_PATH = "search";
     private final RestTemplate restTemplate;
+    private final CircuitBreakerRegistry circuitBreakerRegistry;
     private final Discovery discovery;
 
     @Autowired
-    public SearchService(final Discovery discovery) {
+    public SearchService(final Discovery discovery,
+                         final CircuitBreakerRegistry circuitBreakerRegistry) {
         this.restTemplate = new RestTemplateBuilder()
                 .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
                 .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS))
                 .build();
         this.discovery = discovery;
+        this.circuitBreakerRegistry = circuitBreakerRegistry;
     }
 
     public GetItemResponse getItem(final String productId, final String provider) {
@@ -56,7 +63,7 @@ public class SearchService {
                 .build();
     }
 
-    @CircuitBreaker(name = "search")
+    @CircuitBreaker(name = "search", fallbackMethod = "fallback")
     public List<SearchResponse> search(final List<String> keywords) {
         final var url = discovery.getService(ServiceType.SEARCH);
         final var properUrl = UriComponentsBuilder.fromHttpUrl(url).path(SEARCH_PATH).queryParam("keyword", keywords).build();
@@ -77,6 +84,10 @@ public class SearchService {
                     .name(details.getName())
                     .build();
         }).collect(Collectors.toList());
+    }
+
+    private List fallback(List l, Throwable t) {
+        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     public void kill(final String serviceProvider) {
