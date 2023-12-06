@@ -3,9 +3,8 @@ package meerkat.mango.api.gateway.services;
 public enum ServiceType {
     SEARCH("search"),
     CHECKOUT("checkout"),
-    STOCK_NOTIFIER("stockNotifier"),
-    PRICE_NOTIFIER("priceChangeNotifier"),
     CART("cart"),
+    FAVOURITES("favourites"),
     REVIEWS("reviews");
 
     private final String serviceName;
