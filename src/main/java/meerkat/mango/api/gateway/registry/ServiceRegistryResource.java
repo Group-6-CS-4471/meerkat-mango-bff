@@ -28,9 +28,6 @@ public class ServiceRegistryResource {
     @GetMapping(value = "/verify", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VerifyServiceResponse> verifyService(@RequestParam("service") String service) {
         final var services = serviceRegistryService.verifyService(service);
-        if (services == null) {
-            ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(services);
     }
 }
