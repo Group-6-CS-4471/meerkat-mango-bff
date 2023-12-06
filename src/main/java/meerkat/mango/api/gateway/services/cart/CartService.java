@@ -52,7 +52,7 @@ public class CartService {
 
         final var cart = response.getBody();
 
-        cart.setTotal(cart.getProducts().stream().map(p -> p.getCartProduct().getPrice() * p.getCartProduct().getAmount()).reduce(Double::sum).get());
+        cart.setTotal(cart.getProducts().stream().map(p -> p.getCartProduct().getPrice() * p.getCartProduct().getAmount()).reduce(Double::sum).orElse(0D));
 
         return cart;
     }
