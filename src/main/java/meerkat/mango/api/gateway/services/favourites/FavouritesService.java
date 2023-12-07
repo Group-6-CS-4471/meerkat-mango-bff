@@ -55,7 +55,7 @@ public class FavouritesService {
     }
 
     public Favourites removeFavourite(String userId, String provider, List<FavouritesItem> favouritesItems) {
-        final var url = discovery.getService(ServiceType.REVIEWS);
+        final var url = discovery.getService(ServiceType.FAVOURITES);
         if (url == null) {
             return null;
         }
