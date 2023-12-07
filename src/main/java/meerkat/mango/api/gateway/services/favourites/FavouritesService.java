@@ -64,4 +64,24 @@ public class FavouritesService {
 
         return restTemplate.postForObject(properUrl.toUri(), favouritesItems, Favourites.class);
     }
+
+    public void kill(final String serviceProvider) {
+        final var url = discovery.getService(ServiceType.FAVOURITES);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(FAVOURITES_PATH, "health", "kill")
+                .queryParam("provider", serviceProvider)
+                .build();
+
+        restTemplate.getForEntity(properUrl.toUri(), String.class);
+    }
+
+    public void register(final String serviceProvider) {
+        final var url = discovery.getService(ServiceType.FAVOURITES);
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(FAVOURITES_PATH, "health", "register")
+                .queryParam("provider", serviceProvider)
+                .build();
+
+        restTemplate.getForEntity(properUrl.toUri(), String.class);
+    }
 }

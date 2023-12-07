@@ -60,7 +60,7 @@ public class ReviewsService {
     }
 
     public void register(final String serviceProvider) {
-        final var url = discovery.getService(ServiceType.SEARCH);
+        final var url = discovery.getService(ServiceType.REVIEWS);
         final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
                 .pathSegment(REVIEWS_PATH, "health", "register")
                 .queryParam("provider", serviceProvider)
