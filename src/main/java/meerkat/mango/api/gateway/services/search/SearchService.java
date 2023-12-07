@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.ws.rs.ServiceUnavailableException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -27,18 +26,15 @@ public class SearchService {
 
     private static final String SEARCH_PATH = "search";
     private final RestTemplate restTemplate;
-    private final CircuitBreakerRegistry circuitBreakerRegistry;
     private final Discovery discovery;
 
     @Autowired
-    public SearchService(final Discovery discovery,
-                         final CircuitBreakerRegistry circuitBreakerRegistry) {
+    public SearchService(final Discovery discovery) {
         this.restTemplate = new RestTemplateBuilder()
                 .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
                 .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS))
                 .build();
         this.discovery = discovery;
-        this.circuitBreakerRegistry = circuitBreakerRegistry;
     }
 
     public GetItemResponse getItem(final String productId, final String provider) {
