@@ -39,7 +39,7 @@ public class CheckoutService {
             return null;
         }
 
-        final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CHECKOUT_PATH, productId, provider).queryParam("amount", amount).build();
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CHECKOUT_PATH, "lower-stock", productId, provider).queryParam("amount", amount).build();
 
         return restTemplate.getForEntity(properUrl.toUri(), Boolean.class).getBody();
     }
