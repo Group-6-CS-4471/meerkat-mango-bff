@@ -3,19 +3,16 @@ package meerkat.mango.api.gateway.services.checkout;
 import meerkat.mango.api.gateway.resttemplate.CustomClientHttpRequestFactory;
 import meerkat.mango.api.gateway.services.Discovery;
 import meerkat.mango.api.gateway.services.ServiceType;
-import meerkat.mango.api.gateway.services.favourites.Favourites;
-import meerkat.mango.api.gateway.services.favourites.FavouritesItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class CheckoutService {
@@ -33,13 +30,21 @@ public class CheckoutService {
                 .build();
     }
 
-    public Boolean lowerStock(final String productId, final String provider, final int amount) {
+    public Boolean lowerStock(final String productId,
+                              final String provider,
+                              int amount,
+                              final String cartId,
+                              final String userId) {
         final var url = discovery.getService(ServiceType.REVIEWS);
         if (url == null) {
             return null;
         }
-
-        final var properUrl = UriComponentsBuilder.fromHttpUrl(url).pathSegment(CHECKOUT_PATH, "lower-stock", productId, provider).queryParam("amount", amount).build();
+        final var properUrl = UriComponentsBuilder.fromHttpUrl(url)
+                .pathSegment(CHECKOUT_PATH, "lower-stock", productId, provider)
+                .queryParam("amount", amount)
+                .queryParam("cartId", cartId)
+                .queryParam("userId", userId)
+                .build();
 
         return restTemplate.getForEntity(properUrl.toUri(), Boolean.class).getBody();
     }
