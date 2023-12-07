@@ -7,6 +7,7 @@ import meerkat.mango.api.gateway.services.favourites.Favourites;
 import meerkat.mango.api.gateway.services.favourites.FavouritesItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
@@ -16,8 +17,8 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class CheckoutService
-{
+@Service
+public class CheckoutService {
     private final RestTemplate restTemplate;
     private final Discovery discovery;
     private static final String CHECKOUT_PATH = "checkout";
