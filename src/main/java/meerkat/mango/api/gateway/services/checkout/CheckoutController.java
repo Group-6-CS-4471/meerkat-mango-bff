@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/checkout")
 public class CheckoutController {
 
-    private final ProductsDao productsDao;
+    private final CheckoutService checkoutService;
 
     @Autowired
-    public CheckoutController(final ProductsDao productsDao) {
-        this.productsDao = productsDao;
+    public CheckoutController(final CheckoutService checkoutService) {
+        this.checkoutService = checkoutService;
     }
 
     @GetMapping(value = "/lower-stock/{productId}/{provider}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -25,6 +25,6 @@ public class CheckoutController {
     public Boolean lowerStock(@PathVariable("productId") final String productId,
                               @PathVariable("provider") final String provider,
                               @RequestParam("amount") final int amount) {
-        return productsDao.lowerStock(productId, provider, amount);
+        return checkoutService.lowerStock(productId, provider, amount);
     }
 }
