@@ -1,6 +1,7 @@
 package meerkat.mango.api.gateway.services.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,10 @@ import meerkat.mango.api.gateway.services.Discovery;
 import meerkat.mango.api.gateway.services.ServiceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
@@ -56,7 +59,7 @@ public class SearchService {
                 .build();
     }
 
-    @CircuitBreaker(name = "search")
+    @CircuitBreaker(name = "search", fallbackMethod = "fallback")
     public List<SearchResponse> search(final List<String> keywords) {
         final var url = discovery.getService(ServiceType.SEARCH);
         final var properUrl = UriComponentsBuilder.fromHttpUrl(url).path(SEARCH_PATH).queryParam("keyword", keywords).build();
@@ -77,6 +80,10 @@ public class SearchService {
                     .name(details.getName())
                     .build();
         }).collect(Collectors.toList());
+    }
+
+    private List fallback(List l, Throwable t) {
+        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     public void kill(final String serviceProvider) {
