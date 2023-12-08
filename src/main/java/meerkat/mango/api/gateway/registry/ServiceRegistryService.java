@@ -26,18 +26,23 @@ public class ServiceRegistryService {
     }
 
     public VerifyServiceResponse verifyService(final String service) {
-        final var mainRegistryResponse = callServiceRegistry(service, RegistryType.MAIN, 50000);
-        if (mainRegistryResponse != null && mainRegistryResponse.getStatusCode().is2xxSuccessful()) {
-            return mainRegistryResponse.getBody();
+        try {
+            final var mainRegistryResponse = callServiceRegistry(service, RegistryType.MAIN, 50000);
+            if (mainRegistryResponse.getStatusCode().is2xxSuccessful()) {
+                return mainRegistryResponse.getBody();
+            }
+        } catch (ServiceRegistryNotFoundException e) {
+            try {
+                final var backupResponse = callServiceRegistry(service, RegistryType.BACKUP, 50001);
+                if (!backupResponse.getStatusCode().is2xxSuccessful()) {
+                    LOG.error("Service registries are unavailable. This isn't right.");
+                }
+                return backupResponse.getBody();
+            } catch (ServiceRegistryNotFoundException e2) {
+                return null;
+            }
         }
-
-        final var backupResponse = callServiceRegistry(service, RegistryType.BACKUP, 50001);
-        if (backupResponse == null || !backupResponse.getStatusCode().is2xxSuccessful()) {
-            LOG.error("Service registries are unavailable. This isn't right.");
-            return null;
-        }
-
-        return backupResponse.getBody();
+        return null;
     }
 
     private ResponseEntity<VerifyServiceResponse> callServiceRegistry(final String service, final RegistryType type, final int port) {
@@ -50,7 +55,7 @@ public class ServiceRegistryService {
         try {
             return restTemplate.getForEntity("http:" + uri.toUriString(), VerifyServiceResponse.class);
         } catch (ResourceAccessException e) {
-            return null;
+            throw new ServiceRegistryNotFoundException();
         }
 
     }
