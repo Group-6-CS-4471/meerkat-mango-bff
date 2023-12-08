@@ -24,7 +24,9 @@ public class CheckoutController {
     @ResponseBody
     public Boolean lowerStock(@PathVariable("productId") final String productId,
                               @PathVariable("provider") final String provider,
-                              @RequestParam("amount") final int amount) {
-        return checkoutService.lowerStock(productId, provider, amount);
+                              @RequestParam("amount") final int amount,
+                              @RequestParam("cartId") final String cartId,
+                              @RequestParam("userId") final String userId) {
+        return checkoutService.lowerStock(productId, provider, amount, cartId, userId);
     }
 }
